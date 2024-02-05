@@ -1,3 +1,8 @@
+using poc_sync_spot_instance_retry_api.Background;
+using poc_sync_spot_instance_retry_api.Resilience;
+using Polly;
+using System.ComponentModel.DataAnnotations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,14 +12,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<AsyncPolicy>(WaitAndRetryExtensions.CreateWaitAndRetryPolicy(new[]
+{
+    TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(7)
+}));
+
+builder.Services.AddSingleton<IWorker, Worker>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
