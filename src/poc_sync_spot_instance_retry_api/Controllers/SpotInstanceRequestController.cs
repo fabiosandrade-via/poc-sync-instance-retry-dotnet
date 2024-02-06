@@ -22,7 +22,7 @@ namespace poc_sync_spot_instance_retry_api.Controllers
         {
             try
             {
-                _logger.LogInformation("Início de execução de chamada spot instance...");
+                _logger.LogInformation("Início de execução de chamada spot instance request...");
                 return Ok(_worker.ExecuteAsync().Result);
             }
             catch(Exception ex) 

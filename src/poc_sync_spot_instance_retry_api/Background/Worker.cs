@@ -26,7 +26,6 @@ namespace poc_sync_spot_instance_retry_api.Background
 
             CancellationTokenSource stoppingToken = new CancellationTokenSource();
             SpotInstanceModel spotInstanceModel = new SpotInstanceModel();
-            spotInstanceModel.GeneralThreshold = threshold;
 
             int contThreshold = 0;
 
@@ -44,8 +43,9 @@ namespace poc_sync_spot_instance_retry_api.Background
                                         $"StatusCode = {spotInstanceModel.StatusCode} | " +
                                         $"Mensagem = {spotInstanceModel.Message}";
 
-                    spotInstanceModel = GetSpotInstance(spotInstanceModel, "Acesso a spot instance executada com sucesso.", HttpStatusCode.OK, logMessage);
-                    stoppingToken.Cancel();
+                    spotInstanceModel.Logs.Add(logMessage);
+                    //spotInstanceModel = GetSpotInstance(spotInstanceModel, spotInstanceModel.Message, HttpStatusCode.OK, logMessage);
+                    //stoppingToken.Cancel();
                     contThreshold = threshold;
                 }
                 catch (Exception ex)

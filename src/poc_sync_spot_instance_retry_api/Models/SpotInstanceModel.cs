@@ -11,6 +11,5 @@ namespace poc_sync_spot_instance_retry_api.Models
         {
             Logs = new List<string>();
         }
-        public int GeneralThreshold { get; set; }
     }
 }
