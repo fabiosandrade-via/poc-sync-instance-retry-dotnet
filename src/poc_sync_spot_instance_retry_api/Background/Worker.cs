@@ -21,7 +21,7 @@ namespace poc_sync_spot_instance_retry_api.Background
         public async Task<SpotInstanceModel> ExecuteAsync()
         {
             var httpClient = new HttpClient();
-            var urlApiSpotInstance = _configuration["UrlApiSpotInstance"];
+            string urlApiSpotInstance = _configuration["UrlApiSpotInstance"];
             int threshold = Convert.ToInt32(_configuration["Threshold"]);
 
             CancellationTokenSource stoppingToken = new CancellationTokenSource();
