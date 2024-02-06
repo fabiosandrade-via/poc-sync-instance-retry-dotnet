@@ -5,7 +5,6 @@ using System.Net;
 namespace poc_sync_spot_instance_retry_api.Background
 {
     public class Worker : IWorker
-    //: BackgroundService
     {
         private readonly ILogger<Worker> _logger;
         private readonly IConfiguration _configuration;
@@ -23,10 +22,15 @@ namespace poc_sync_spot_instance_retry_api.Background
         {
             var httpClient = new HttpClient();
             var urlApiSpotInstance = _configuration["UrlApiSpotInstance"];
+            int threshold = Convert.ToInt32(_configuration["Threshold"]);
+
             CancellationTokenSource stoppingToken = new CancellationTokenSource();
             SpotInstanceModel spotInstanceModel = new SpotInstanceModel();
+            spotInstanceModel.GeneralThreshold = threshold;
 
-            while (!stoppingToken.IsCancellationRequested)
+            int contThreshold = 0;
+
+            while (!stoppingToken.IsCancellationRequested && contThreshold < threshold)
             {
                 try
                 {
@@ -36,13 +40,13 @@ namespace poc_sync_spot_instance_retry_api.Background
                             .GetFromJsonAsync<SpotInstanceModel>(urlApiSpotInstance);
                     });
 
-                    stoppingToken.Cancel();
-
                     string logMessage = $"* {DateTime.Now:HH:mm:ss} * " +
                                         $"StatusCode = {spotInstanceModel.StatusCode} | " +
                                         $"Mensagem = {spotInstanceModel.Message}";
 
                     spotInstanceModel = GetSpotInstance(spotInstanceModel, "Acesso a spot instance executada com sucesso.", HttpStatusCode.OK, logMessage);
+                    stoppingToken.Cancel();
+                    contThreshold = threshold;
                 }
                 catch (Exception ex)
                 {
@@ -52,6 +56,7 @@ namespace poc_sync_spot_instance_retry_api.Background
                     spotInstanceModel = GetSpotInstance(spotInstanceModel, "Acesso a spot instance indisponível.", HttpStatusCode.BadRequest, logMessage);
                 }
 
+                contThreshold++;
                 await Task.Delay(1000, stoppingToken.Token);
             }
 

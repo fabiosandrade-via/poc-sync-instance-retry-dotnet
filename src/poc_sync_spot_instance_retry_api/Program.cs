@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<AsyncPolicy>(WaitAndRetryExtensions.CreateWaitAndRetryPolicy(new[]
 {
-    TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(7)
+    TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)
 }));
 
 builder.Services.AddSingleton<IWorker, Worker>();
