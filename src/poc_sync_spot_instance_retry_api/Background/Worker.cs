@@ -44,8 +44,6 @@ namespace poc_sync_spot_instance_retry_api.Background
                                         $"Mensagem = {spotInstanceModel.Message}";
 
                     spotInstanceModel.Logs.Add(logMessage);
-                    //spotInstanceModel = GetSpotInstance(spotInstanceModel, spotInstanceModel.Message, HttpStatusCode.OK, logMessage);
-                    //stoppingToken.Cancel();
                     contThreshold = threshold;
                 }
                 catch (Exception ex)
