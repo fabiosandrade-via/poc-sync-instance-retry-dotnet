@@ -1,6 +1,7 @@
 ﻿using poc_sync_spot_instance_retry_api.Models;
 using Polly;
 using System.Net;
+using System.Net.Mail;
 
 namespace poc_sync_spot_instance_retry_api.Background
 {
@@ -42,7 +43,7 @@ namespace poc_sync_spot_instance_retry_api.Background
                     string logMessage = $"* {DateTime.Now:HH:mm:ss} * " +
                                         $"StatusCode = {spotInstanceModel.StatusCode} | " +
                                         $"Mensagem = {spotInstanceModel.Message}";
-
+                    _logger.LogInformation(logMessage);
                     spotInstanceModel.Logs.Add(logMessage);
                     contThreshold = threshold;
                 }
@@ -50,8 +51,10 @@ namespace poc_sync_spot_instance_retry_api.Background
                 {
                     string logMessage = $"# {DateTime.Now:HH:mm:ss} # " +
                                         $"Falha ao invocar a API: {ex.GetType().FullName} | {ex.Message}";
-
-                    spotInstanceModel = GetSpotInstance(spotInstanceModel, "Acesso a spot instance indisponível.", HttpStatusCode.BadRequest, logMessage);
+                    _logger.LogError(logMessage);
+                    spotInstanceModel.Message = ex.Message;
+                    spotInstanceModel.Logs.Add(logMessage);
+                    spotInstanceModel.StatusCode = HttpStatusCode.InternalServerError;
                 }
 
                 contThreshold++;
@@ -59,23 +62,6 @@ namespace poc_sync_spot_instance_retry_api.Background
             }
 
             return await Task.FromResult<SpotInstanceModel>(spotInstanceModel);
-        }
-        private SpotInstanceModel GetSpotInstance(SpotInstanceModel spotInstanceModel, string message, HttpStatusCode httpStatusCode, string logMessage)
-        {
-            spotInstanceModel.Message = message;
-            spotInstanceModel.StatusCode = httpStatusCode;
-
-            if (httpStatusCode == HttpStatusCode.OK)
-            {
-                _logger.LogInformation(logMessage);
-            }
-            else
-            {
-                _logger.LogError(logMessage);
-            }
-
-            spotInstanceModel.Logs.Add(logMessage);
-            return spotInstanceModel;
         }
     }
 }
