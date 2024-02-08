@@ -9,9 +9,9 @@ namespace poc_sync_spot_instance_retry_api.Controllers
     public class SpotInstanceRequestController : ControllerBase
     {
         private readonly ILogger<SpotInstanceRequestController> _logger;
-        private readonly IWorker _worker;
+        private readonly IResilience _worker;
 
-        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, IWorker worker)
+        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, IResilience worker)
         {
             _logger = logger;
             _worker = worker;

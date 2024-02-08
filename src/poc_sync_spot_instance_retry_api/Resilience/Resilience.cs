@@ -1,19 +1,21 @@
 ﻿using poc_sync_spot_instance_retry_api.Models;
 using Polly;
+using Polly.CircuitBreaker;
+using Polly.Wrap;
 using System.Net;
 using System.Net.Mail;
 
-namespace poc_sync_spot_instance_retry_api.Background
+namespace poc_sync_spot_instance_retry_api.Resilience
 {
     public class Worker : IWorker
     {
         private readonly ILogger<Worker> _logger;
         private readonly IConfiguration _configuration;
-        private readonly AsyncPolicy _resiliencePolicy;
+        private readonly AsyncPolicyWrap _resiliencePolicy;
 
         public Worker(ILogger<Worker> logger,
             IConfiguration configuration,
-            AsyncPolicy resiliencePolicy)
+            AsyncPolicyWrap resiliencePolicy)
         {
             _logger = logger;
             _configuration = configuration;
@@ -61,7 +63,7 @@ namespace poc_sync_spot_instance_retry_api.Background
                 await Task.Delay(1000, stoppingToken.Token);
             }
 
-            return await Task.FromResult<SpotInstanceModel>(spotInstanceModel);
+            return await Task.FromResult(spotInstanceModel);
         }
     }
 }
