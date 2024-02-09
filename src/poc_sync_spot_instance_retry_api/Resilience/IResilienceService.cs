@@ -2,7 +2,7 @@
 
 namespace poc_sync_spot_instance_retry_api.Resilience
 {
-    public interface IWorker
+    public interface IResilienceService
     {
         Task<SpotInstanceModel> ExecuteAsync();
     }

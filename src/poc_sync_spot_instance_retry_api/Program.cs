@@ -1,4 +1,3 @@
-using poc_sync_spot_instance_retry_api.Background;
 using poc_sync_spot_instance_retry_api.Resilience;
 using Polly;
 using Polly.Wrap;
@@ -18,7 +17,7 @@ builder.Services.AddSingleton<AsyncPolicyWrap>(ResilienceExtensions.CreateResili
     TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)
 }, 4, 30));
 
-builder.Services.AddSingleton<IResilience, Resilience>();
+builder.Services.AddSingleton<IResilienceService, ResilienceService>();
 
 var app = builder.Build();
 

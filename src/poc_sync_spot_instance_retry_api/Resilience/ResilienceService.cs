@@ -7,13 +7,13 @@ using System.Net.Mail;
 
 namespace poc_sync_spot_instance_retry_api.Resilience
 {
-    public class Worker : IWorker
+    public class ResilienceService : IResilienceService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<ResilienceService> _logger;
         private readonly IConfiguration _configuration;
         private readonly AsyncPolicyWrap _resiliencePolicy;
 
-        public Worker(ILogger<Worker> logger,
+        public ResilienceService(ILogger<ResilienceService> logger,
             IConfiguration configuration,
             AsyncPolicyWrap resiliencePolicy)
         {
