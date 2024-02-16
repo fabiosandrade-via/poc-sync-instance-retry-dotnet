@@ -1,21 +1,19 @@
-﻿using poc_sync_spot_instance_retry_api.Models;
-using Polly;
-using Polly.CircuitBreaker;
+﻿using poc_async_spot_instance_dlq_api.Models;
+using Polly.Retry;
 using Polly.Wrap;
 using System.Net;
-using System.Net.Mail;
 
-namespace poc_sync_spot_instance_retry_api.Resilience
+namespace poc_async_spot_instance_dlq_api.Service
 {
-    public class ResilienceService : IResilienceService
+    public class SpotInstanceService : ISpotInstanceService
     {
-        private readonly ILogger<ResilienceService> _logger;
+        private readonly ILogger<SpotInstanceService> _logger;
         private readonly IConfiguration _configuration;
-        private readonly AsyncPolicyWrap _resiliencePolicy;
+        private readonly AsyncRetryPolicy _resiliencePolicy;
 
-        public ResilienceService(ILogger<ResilienceService> logger,
+        public SpotInstanceService(ILogger<SpotInstanceService> logger,
             IConfiguration configuration,
-            AsyncPolicyWrap resiliencePolicy)
+            AsyncRetryPolicy resiliencePolicy)
         {
             _logger = logger;
             _configuration = configuration;
@@ -52,11 +50,11 @@ namespace poc_sync_spot_instance_retry_api.Resilience
                 catch (Exception ex)
                 {
                     string logMessage = $"# {DateTime.Now:HH:mm:ss} # " +
-                                        $"Falha ao invocar a API: {ex.GetType().FullName} | {ex.Message}";
+                                        $"Padrão DLQ iniciado devido a: {ex.GetType().FullName} | {ex.Message}";
                     _logger.LogError(logMessage);
                     spotInstanceModel.Message = ex.Message;
                     spotInstanceModel.Logs.Add(logMessage);
-                    spotInstanceModel.StatusCode = HttpStatusCode.InternalServerError;
+                    spotInstanceModel.StatusCode = HttpStatusCode.OK;
                 }
 
                 contThreshold++;

@@ -1,20 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using poc_sync_spot_instance_retry_api.Models;
-using poc_sync_spot_instance_retry_api.Resilience;
+using poc_sync_spot_instance_retry_api.Service;
 
 namespace poc_sync_spot_instance_retry_api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class SpotInstanceRequestController : ControllerBase
     {
         private readonly ILogger<SpotInstanceRequestController> _logger;
-        private readonly IResilienceService _resilience;
+        private readonly ISpotInstanceService _spotInstanceService;
 
-        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, IResilienceService resilience)
+        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, ISpotInstanceService resilience)
         {
             _logger = logger;
-            _resilience = resilience;
+            _spotInstanceService = resilience;
         }
 
         [HttpGet(Name = "GetSpotInstanceRequest")]
@@ -23,7 +22,7 @@ namespace poc_sync_spot_instance_retry_api.Controllers
             try
             {
                 _logger.LogInformation("Início de execução de chamada spot instance request...");
-                return Ok(_resilience.ExecuteAsync().Result);
+                return Ok(_spotInstanceService.ExecuteAsync().Result);
             }
             catch(Exception ex) 
             {

@@ -1,4 +1,5 @@
 using poc_sync_spot_instance_retry_api.Resilience;
+using poc_sync_spot_instance_retry_api.Service;
 using Polly;
 using Polly.Wrap;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,17 @@ builder.Services.AddSingleton<AsyncPolicyWrap>(ResilienceExtensions.CreateResili
     TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)
 }, 4, 30));
 
-builder.Services.AddSingleton<IResilienceService, ResilienceService>();
+builder.Services.AddSingleton<ISpotInstanceService, SpotInstanceService>();
+
+builder.Services.AddSwaggerGen(c =>
+    c.SwaggerDoc("v1",
+        new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "POC - Retry + Circuit Breaker",
+            Version = "v1",
+            Description = "Cenário Síncrono: Avaliação para utilização junto a Spot Instance"
+        }
+    ));
 
 var app = builder.Build();
 

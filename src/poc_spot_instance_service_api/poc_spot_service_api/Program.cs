@@ -7,6 +7,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSwaggerGen(c =>
+    c.SwaggerDoc("v1",
+        new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "POC - Microserviço de comunicação para base SQL Server",
+            Version = "v1",
+            Description = "Avaliação para utilização junto a Spot Instance"
+        }
+    ));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
