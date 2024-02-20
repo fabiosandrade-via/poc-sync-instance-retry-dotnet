@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["poc_circuitbreake_api/poc_circuitbreake_api.csproj", "poc_circuitbreake_api/"]
-RUN dotnet restore "poc_circuitbreake_api/poc_circuitbreake_api.csproj"
+COPY ["src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/poc_async_spot_instance_dlq_api.csproj", "src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/"]
+RUN dotnet restore "src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/poc_async_spot_instance_dlq_api.csproj"
 COPY . .
-WORKDIR "/src/poc_circuitbreake_api"
-RUN dotnet build "poc_circuitbreake_api.csproj" -c Release -o /app/build
+WORKDIR "src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/"
+RUN dotnet build "poc_async_spot_instance_dlq_api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "poc_circuitbreake_api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "poc_async_spot_instance_dlq_api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "poc_circuitbreake_api.dll"]
+ENTRYPOINT ["dotnet", "poc_async_spot_instance_dlq_api.dll"]

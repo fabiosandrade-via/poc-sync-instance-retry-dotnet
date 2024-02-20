@@ -10,10 +10,10 @@ namespace poc_sync_spot_instance_retry_api.Controllers
         private readonly ILogger<SpotInstanceRequestController> _logger;
         private readonly ISpotInstanceService _spotInstanceService;
 
-        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, ISpotInstanceService resilience)
+        public SpotInstanceRequestController(ILogger<SpotInstanceRequestController> logger, ISpotInstanceService spotInstanceService)
         {
             _logger = logger;
-            _spotInstanceService = resilience;
+            _spotInstanceService = spotInstanceService;
         }
 
         [HttpGet(Name = "GetSpotInstanceRequest")]

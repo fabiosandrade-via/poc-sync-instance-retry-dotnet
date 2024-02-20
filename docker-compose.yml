@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  poc-spot-instance-dlq-api:
+   image: img-poc-spot-instance-dlq-api
+   container_name: ctn-poc-spot-instance-dlq-api
+   build:
+     context: ./
+     dockerfile: ./src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/Dockerfile
+   ports:
+     - "8080:80"     
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"      
+  kafka:
+    image: wurstmeister/kafka:0.10.2.0
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper      
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_CREATE_TOPICS: "poc-spot-topic:1:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: "9092"
+    volumes:
+      - c:/docker.sock:/var/run/docker.sock
+networks: 
+    kafka-compose-network:
+      driver: bridge           
+volumes:
+  cache:
+    driver: local

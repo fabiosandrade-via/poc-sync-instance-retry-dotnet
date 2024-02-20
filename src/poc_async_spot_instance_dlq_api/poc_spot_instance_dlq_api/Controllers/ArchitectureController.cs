@@ -1,5 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using poc_async_spot_instance_dlq_api.DTO;
+using poc_async_spot_instance_dlq_api.Models;
+using poc_async_spot_instance_dlq_api.Service;
 using System.Net;
 
 namespace poc_circuitbreake_api.Controllers
@@ -9,10 +12,14 @@ namespace poc_circuitbreake_api.Controllers
     public class ArchitectureController : ControllerBase
     {
         private readonly ILogger<ArchitectureController> _logger;
+        private readonly ISpotInstanceService _spotInstanceService;
+        private readonly IMapper _mapper;
 
-        public ArchitectureController(ILogger<ArchitectureController> logger)
+        public ArchitectureController(ILogger<ArchitectureController> logger, IMapper mapper, ISpotInstanceService spotInstanceService)
         {
             _logger = logger;
+            _mapper = mapper;
+            _spotInstanceService = spotInstanceService;
         }
 
         [HttpPost(Name = "PostArchitecture")]
@@ -22,7 +29,8 @@ namespace poc_circuitbreake_api.Controllers
             try
             {
                 _logger.LogInformation("Inclusão de arquitetura...");
-                return Ok();
+                var architectureModel = _mapper.Map<ArchitectureModel>(architectureDTO);
+                return Ok(_spotInstanceService.ExecuteInsertAsync(architectureModel).Result);
             }
             catch (Exception ex)
             {
@@ -37,7 +45,8 @@ namespace poc_circuitbreake_api.Controllers
             try
             {
                 _logger.LogInformation("Atualização de arquitetura...");
-                return Ok();
+                var architectureModel = _mapper.Map<ArchitectureModel>(architectureDTO);
+                return Ok(_spotInstanceService.ExecuteUpdateAsync(architectureModel).Result);
             }
             catch (Exception ex)
             {

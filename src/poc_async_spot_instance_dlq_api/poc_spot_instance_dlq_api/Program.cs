@@ -1,3 +1,7 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using poc_async_spot_instance_dlq_api.DTO;
+using poc_async_spot_instance_dlq_api.Models;
 using poc_async_spot_instance_dlq_api.Resilience;
 using poc_async_spot_instance_dlq_api.Service;
 using Polly.Retry;
@@ -28,6 +32,14 @@ builder.Services.AddSwaggerGen(c =>
             Description = "Cenário Assíncrono: Avaliação para utilização junto a Spot Instance"
         }
     ));
+
+var configMapper = new MapperConfiguration(cfg =>
+{
+    cfg.CreateMap<ArchitectureDTO, ArchitectureModel>();
+});
+
+IMapper mapper = configMapper.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 

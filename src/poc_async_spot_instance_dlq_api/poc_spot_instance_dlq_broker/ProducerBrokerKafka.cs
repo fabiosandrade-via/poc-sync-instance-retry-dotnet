@@ -10,7 +10,7 @@ namespace poc_spot_instance_dlq_broker
         {
             try
             {
-                string topic = "poc-spot-topic";
+                string topic = "pocspottopic";
 
                 var config = new ClientConfig()
                 {
@@ -20,7 +20,7 @@ namespace poc_spot_instance_dlq_broker
 
                 using (var producer = new ProducerBuilder<string, string>(config).Build())
                 {
-                    var key = "accountmoviment";
+                    var key = "pocspot";
                     var val = JObject.FromObject(new { entity }).ToString(Formatting.None);
 
                     string valSubst = val.Replace("{\"entity", "");
