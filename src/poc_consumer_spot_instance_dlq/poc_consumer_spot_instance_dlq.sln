@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "poc_consumer_spot_instance_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "poc_consumer_spot_instance_srv", "poc_consumer_spot_instance_srv\poc_consumer_spot_instance_srv.csproj", "{DB1B465B-64AC-4AA9-B401-807507DF0889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "poc_consumer_spot_instance_db", "poc_consumer_spot_instance_db\poc_consumer_spot_instance_db.csproj", "{319FFC66-DC9C-40BF-B05D-C7FA4753F6DC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{DB1B465B-64AC-4AA9-B401-807507DF0889}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1B465B-64AC-4AA9-B401-807507DF0889}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1B465B-64AC-4AA9-B401-807507DF0889}.Release|Any CPU.Build.0 = Release|Any CPU
-		{319FFC66-DC9C-40BF-B05D-C7FA4753F6DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{319FFC66-DC9C-40BF-B05D-C7FA4753F6DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{319FFC66-DC9C-40BF-B05D-C7FA4753F6DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{319FFC66-DC9C-40BF-B05D-C7FA4753F6DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

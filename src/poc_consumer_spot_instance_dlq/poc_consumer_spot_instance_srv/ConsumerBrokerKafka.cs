@@ -12,14 +12,14 @@ namespace poc_consumer_spot_instance_srv
         {
             var config = new ClientConfig()
             {
-                BootstrapServers = "127.0.0.1:9092",
+                BootstrapServers = "broker:9092",
             };
 
             var consumerConfig = new ConsumerConfig(config);
             consumerConfig.GroupId = "group-keyvault2";
             consumerConfig.AutoOffsetReset = AutoOffsetReset.Earliest;
             consumerConfig.EnableAutoCommit = false;
-            string topic = "pocspottopic";
+            string topic = "poc-spot-topic";
 
             CancellationTokenSource cts = new CancellationTokenSource();
 

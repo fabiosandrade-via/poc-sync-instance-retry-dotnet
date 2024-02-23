@@ -10,11 +10,11 @@ namespace poc_spot_instance_dlq_broker
         {
             try
             {
-                string topic = "pocspottopic";
+                string topic = "poc-spot-topic";
 
                 var config = new ClientConfig()
                 {
-                    BootstrapServers = "127.0.0.1:9092",
+                    BootstrapServers = "broker:9092",
 
                 };
 

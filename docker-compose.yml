@@ -7,27 +7,72 @@ services:
      context: ./
      dockerfile: ./src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/Dockerfile
    ports:
-     - "8080:80"     
+     - "8080:80"
+   networks:
+     - kafka-network
+
+  poc-spot-instance-dlq-consumer:
+   image: img-poc-spot-instance-dlq-consumer
+   container_name: ctn-poc-spot-instance-dlq-consumer
+   build:
+     context: ./
+     dockerfile: ./src/poc_consumer_spot_instance_dlq/poc_consumer_spot_instance_dlq/Dockerfile
+   ports:
+     - "8081:80"
+   networks:
+     - kafka-network 
+     
+  poc-spot-instance-srv-api:
+   image: img-poc-spot-instance-srv-api
+   container_name: ctn-poc-spot-instance-srv-api
+   build:
+     context: ./
+     dockerfile: ./src/poc_spot_instance_service_api/poc_spot_service_api/Dockerfile
+   ports:
+     - "8082:80"
+       
+  poc-spot-instance-retry-api:
+   image: img-poc-spot-instance-retry-api
+   container_name: ctn-poc-spot-instance-retry-api
+   build:
+     context: ./
+     dockerfile: ./src/poc_sync_spot_instance_retry_api/poc_spot_instance_retry_api/Dockerfile
+   ports:
+     - "8083:80"
+     
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
-      - "2181:2181"      
-  kafka:
+      - "2181:2181"
+    networks:
+     - kafka-network
+     
+  broker:
     image: wurstmeister/kafka:0.10.2.0
+    hostname: broker
     ports:
       - "9092:9092"
+      - "9093:9093"
     depends_on:
       - zookeeper      
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: INTERNAL://broker:9092, EXTERNAL_SAME_HOST://broker:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:9092, EXTERNAL_SAME_HOST://broker:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT, EXTERNAL_SAME_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "poc-spot-topic:1:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_PORT: "9092"
     volumes:
       - c:/docker.sock:/var/run/docker.sock
+    networks:
+     - kafka-network
 networks: 
-    kafka-compose-network:
-      driver: bridge           
+    kafka-network:
+      driver: bridge
+      name: kafka-network
 volumes:
   cache:
     driver: local
