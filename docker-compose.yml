@@ -8,8 +8,11 @@ services:
      dockerfile: ./src/poc_async_spot_instance_dlq_api/poc_spot_instance_dlq_api/Dockerfile
    ports:
      - "8080:80"
+   depends_on:
+      - broker     
    networks:
      - kafka-network
+     - spot-network
 
   poc-spot-instance-dlq-consumer:
    image: img-poc-spot-instance-dlq-consumer
@@ -19,17 +22,21 @@ services:
      dockerfile: ./src/poc_consumer_spot_instance_dlq/poc_consumer_spot_instance_dlq/Dockerfile
    ports:
      - "8081:80"
+   depends_on:
+      - broker 
    networks:
      - kafka-network 
      
-  poc-spot-instance-srv-api:
-   image: img-poc-spot-instance-srv-api
-   container_name: ctn-poc-spot-instance-srv-api
+  poc-spot-instance-service-api:
+   image: img-poc-spot-instance-service-api
+   container_name: ctn-poc-spot-instance-service-api
    build:
      context: ./
      dockerfile: ./src/poc_spot_instance_service_api/poc_spot_service_api/Dockerfile
    ports:
-     - "8082:80"
+     - "8084:80"
+   networks:
+     - spot-network
        
   poc-spot-instance-retry-api:
    image: img-poc-spot-instance-retry-api
@@ -39,6 +46,8 @@ services:
      dockerfile: ./src/poc_sync_spot_instance_retry_api/poc_spot_instance_retry_api/Dockerfile
    ports:
      - "8083:80"
+   networks:
+     - spot-network
      
   zookeeper:
     image: wurstmeister/zookeeper
@@ -73,6 +82,8 @@ networks:
     kafka-network:
       driver: bridge
       name: kafka-network
+    spot-network:
+      driver: bridge
 volumes:
   cache:
     driver: local
