@@ -17,7 +17,7 @@ namespace poc_consumer_spot_instance_srv
 
             var consumerConfig = new ConsumerConfig(config);
             consumerConfig.GroupId = "group-keyvault2";
-            consumerConfig.AutoOffsetReset = AutoOffsetReset.Earliest;
+            consumerConfig.AutoOffsetReset = AutoOffsetReset.Latest;
             consumerConfig.EnableAutoCommit = false;
             string topic = "poc-spot-topic";
 
