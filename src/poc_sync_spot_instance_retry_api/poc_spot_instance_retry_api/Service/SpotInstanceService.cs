@@ -1,4 +1,5 @@
-﻿using poc_sync_spot_instance_retry_api.Models;
+﻿using poc_sync_spot_instance_retry_api.Infrastructure;
+using poc_sync_spot_instance_retry_api.Models;
 using poc_sync_spot_instance_retry_api.Resilience;
 using Polly;
 using Polly.CircuitBreaker;
@@ -29,7 +30,11 @@ namespace poc_sync_spot_instance_retry_api.Service
             int threshold = Convert.ToInt32(_configuration["Threshold"]);
 
             CancellationTokenSource stoppingToken = new CancellationTokenSource();
-            SpotInstanceModel spotInstanceModel = new SpotInstanceModel();
+            SpotInstanceModel spotInstanceModel = new SpotInstanceModel() {
+                Enviroment = DataInfra.GetEnviroment(),
+                HostName = DataInfra.GetHostName(),
+                NodeName = DataInfra.GetNodeName(_configuration)
+            };
 
             int contThreshold = 0;
 
