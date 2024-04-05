@@ -15,6 +15,8 @@ RUN dotnet build "poc_sync_spot_instance_retry_api.csproj" -c Release -o /app/bu
 FROM build AS publish
 RUN dotnet publish "poc_sync_spot_instance_retry_api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+ENV ASPNETCORE_ENVIRONMENT=”production”
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

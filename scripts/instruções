@@ -1,0 +1,54 @@
+# login no harbor
+docker login harbor01.viavarejo.com.br -u 4960003691
+
+# retageamento da imagem 
+docker tag fabiosantosdeandrade/poc-spot-instance-retry-api:v1.0.0.2 harbor01.viavarejo.com.br/spot/poc-spot-instance-retry-api:v1.0.0.2
+docker tag fabiosantosdeandrade/poc-spot-instance-dlq-consumer:v1.0.0.2 harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-consumer:v1.0.0.2
+docker tag fabiosantosdeandrade/poc-spot-instance-backend:v1.0.0.2 harbor01.viavarejo.com.br/spot/poc-spot-instance-backend:v1.0.0.2
+docker tag fabiosantosdeandrade/poc-spot-instance-dlq-api:v1.0.0.2 harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-api:v1.0.0.2
+
+#push da imagem
+docker push harbor01.viavarejo.com.br/spot/poc-spot-instance-retry-api:v1.0.0.2
+docker push harbor01.viavarejo.com.br/spot/poc-spot-instance-backend:v1.0.0.2
+docker push harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-consumer:v1.0.0.2
+docker push harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-api:v1.0.0.2
+
+docker tag fabiosantosdeandrade/poc-spot-instance-dlq-consumer:v1.0.0.3 harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-consumer:v1.0.0.3
+docker push harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-consumer:v1.0.0.3
+
+#install/upgrade da release helm
+helm upgrade --install \
+retry-api   -n spot \
+nexus/convair-helm --version 'v0.4.12' \
+--values values-retry.yml
+
+helm upgrade --install \
+backend   -n spot \
+nexus/convair-helm --version 'v0.4.12' \
+--values values-backend.yml
+
+helm upgrade --install \
+dlq-api   -n spot \
+nexus/convair-helm --version 'v0.4.12' \
+--values values-dlq-api.yml
+
+helm upgrade --install \
+dlq-consumer   -n spot \
+nexus/convair-helm --version 'v0.4.12' \
+--values values-dlq-consumer.yml
+
+helm upgrade --install \
+broker -n spot \
+bitnami/kafka \
+--values values-broker.yml
+
+
+#adicionar no arquivo hosts:
+c:\Windows\System32\drivers\etc\hosts
+10.104.18.102 retry-hlg.viavarejo.com.br
+10.104.18.102 dlq-hlg.viavarejo.com.br
+
+
+# acessar o swagger no navegador
+https://retry-hlg.viavarejo.com.br/swagger/index.html
+https://dlq-hlg.viavarejo.com.br/swagger/index.html

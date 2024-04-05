@@ -1,0 +1,83 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+fullnameOverride: dlq-api
+nameOverride: dlq-api
+
+deployment:
+  nodeSelector:
+    app: pocspot
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+  probes:
+    liveness:
+      failureThreshold: 3
+      exec:
+        command:
+        - ls
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 10
+      successThreshold: 1
+    readiness:
+      failureThreshold: 3
+      exec:
+        command:
+        - ls
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 10
+      successThreshold: 1
+  image:
+    repository: harbor01.viavarejo.com.br/spot/poc-spot-instance-dlq-api
+    tag: v1.0.0.2
+    pullPolicy: IfNotPresent
+  containers:
+    - ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+
+service:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+
+ingress:
+  enabled: true
+  default:
+    tlsSecretName: "viavarejo-tls"
+    hostPath:
+      name: /
+      type: Prefix
+  external:
+    enabled: true
+    suffixName: -external
+    hosts:
+      - host: dlq-hlg.viavarejo.com.br
+    tls:
+      - hosts: 
+          - dlq-hlg.viavarejo.com.br
+  internal:
+    hosts:
+      - host: dlq-hlg.viavarejo.com.br
+    tls:
+      - hosts: 
+          - dlq-hlg.viavarejo.com.br
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    target:
+      cpuUtilizationPercentage: 70
